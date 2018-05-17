@@ -23239,7 +23239,10 @@ var Node = function () {
         if (d.icon) {
           d.height = d.width;
           Node.append_image(this);
-        } else Node.append_rect(this);
+        } else {
+          d.height += 3 * 2;
+          Node.append_rect(this);
+        }
 
         Node.append_text(this);
       });

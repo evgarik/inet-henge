@@ -71,7 +71,10 @@ class Node {
         Node.append_image(this);
       }
       else
+      {
+        d.height += 3 * 2;
         Node.append_rect(this);
+      }
 
       Node.append_text(this);
     });
