@@ -23265,9 +23265,9 @@ var Node = function () {
       });
 
       // Отображение loopback
-      // text.each((d) => {
-      //   Node.append_tspans(text, d.meta);
-      // });
+      text.each(function (d) {
+        Node.append_tspans(text, d.meta);
+      });
     }
   }, {
     key: 'append_tspans',
@@ -23279,6 +23279,15 @@ var Node = function () {
           return d.tspan_offset;
         }).attr('class', m.class).text(m.value);
       });
+    }
+  }, {
+    key: 'getMeta',
+    value: function getMeta(meta) {
+      var metaArr = {};
+      meta.forEach(function (m) {
+        metaArr[m.class] = m.value;
+      });
+      return metaArr;
     }
   }, {
     key: 'append_image',
@@ -23310,18 +23319,18 @@ var Node = function () {
     key: 'tick',
     value: function tick(container) {
 
-      var tipFactory = d3scription(function (d) {
-        return '<img src=' + d.icon + '></img>';
-      });
-      var tip = tipFactory().element(container);
-
       container.attr('transform', function (d) {
         return d.transform();
       }).on('dblclick', function (d) {
         //Обрабатываем двойной клик на узле
         d3.event.stopPropagation(); //останавливаем обработку двойного клика в D3 (зум по двойному клику)
-        window.open('telnet:// /N ' + d.name + ' /TELNET 10.94.112.35', '_blank');
-      }).on('mouseover', tip.show).on('mouseout', tip.hide);
+
+        var params = Node.getMeta(d.meta);
+
+        if (params.hasOwnProperty('loopback')) {
+          window.open('telnet:// /N ' + d.name + ' /TELNET ' + params.loopback, '_blank');
+        }
+      });
     }
   }, {
     key: 'set_position',

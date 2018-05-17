@@ -92,9 +92,9 @@ class Node {
       .attr('x', (d) => d.x_for_text());
 
       // Отображение loopback
-    // text.each((d) => {
-    //   Node.append_tspans(text, d.meta);
-    // });
+    text.each((d) => {
+      Node.append_tspans(text, d.meta);
+    });
   }
 
   static append_tspans(container, meta) {
@@ -105,6 +105,15 @@ class Node {
         .attr('class', m.class)
         .text(m.value);
     });
+  }
+
+  //метод формирования объекта метаинформайии об узле 
+  static getMeta(meta) {
+    var metaArr = {};
+    meta.forEach((m) => {
+      metaArr[m.class] = m.value;
+    });
+    return metaArr;
   }
 
   static append_image(container) {
@@ -127,21 +136,19 @@ class Node {
 
   static tick(container) {
 
-    var tipFactory = d3scription(function(d) {
-      return '<img src='+d.icon+'></img>'
-    });
-    var tip = tipFactory().element(container); 
-
     container.attr('transform', (d) => d.transform())
     .on('dblclick', function(d) {  //Обрабатываем двойной клик на узле
       d3.event.stopPropagation(); //останавливаем обработку двойного клика в D3 (зум по двойному клику)
-      window.open(
-        'telnet:// /N '+d.name+' /TELNET 10.94.112.35',
-        '_blank'
-      );
+      
+      var params = Node.getMeta(d.meta); // получаем мета описание узла
+      
+      if (params.hasOwnProperty('loopback')) {
+        window.open(
+          'telnet:// /N '+d.name+' /TELNET '+ params.loopback,
+          '_blank'
+        );
+      }
     })
-    .on('mouseover', tip.show)
-    .on('mouseout', tip.hide);
   }
 
   static set_position(node, position) {
