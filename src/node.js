@@ -91,9 +91,10 @@ class Node {
       .text((d) => d.name)
       .attr('x', (d) => d.x_for_text());
 
-    text.each((d) => {
-      Node.append_tspans(text, d.meta);
-    });
+      // Отображение loopback
+    // text.each((d) => {
+    //   Node.append_tspans(text, d.meta);
+    // });
   }
 
   static append_tspans(container, meta) {
@@ -125,7 +126,14 @@ class Node {
   }
 
   static tick(container) {
-    container.attr('transform', (d) => d.transform());
+    container.attr('transform', (d) => d.transform())
+    .on('dblclick', function(d) {  //Обрабатываем двойной клик на узле
+      d3.event.stopPropagation(); //останавливаем обработку двойного клика в D3 (зум по двойному клику)
+      window.open(
+        'telnet:// /N MBH_58_00034_1 /TELNET 10.94.112.35',
+        '_blank'
+      );
+    });
   }
 
   static set_position(node, position) {

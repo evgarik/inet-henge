@@ -54,7 +54,8 @@ class Diagram {
       .append('g')
       .call(
         d3.behavior.zoom().on('zoom', () => this.zoom_callback(container))
-      ).append('g');
+      )//.on("dblclick.zoom", null) блокируем зум по двойному клику на карте
+      .append('g');
 
     container.append('rect')
       .attr('width', this.width * 10)   // 10 is huge enough
