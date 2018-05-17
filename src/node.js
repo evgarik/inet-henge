@@ -11,8 +11,6 @@ class Node {
     this.extra_class = data.class || '';
     this.color = color;
 
-    this.width = 60;
-    this.height = 40;
     this.padding = 3;
     this.tspan_offset = '1.1em';
 
@@ -53,15 +51,25 @@ class Node {
   }
 
   static render(svg, nodes) {
+
+    nodes.forEach(function(node) {
+      var sizeText = Node.textSize(node.name);
+      node.width = sizeText.width;
+      node.height = sizeText.height;
+    });
+
     const container = svg.selectAll('.node')
       .data(nodes)
       .enter()
       .append('g')
       .attr('transform', (d) => d.transform());
 
+
     container.each(function(d) {
-      if (d.icon)
+      if (d.icon) {
+        d.height = d.width;
         Node.append_image(this);
+      }
       else
         Node.append_rect(this);
 
@@ -123,6 +131,15 @@ class Node {
       d.y = position[i].y;
       return d.transform();
     });
+  }
+
+  static textSize(text) {
+    if (!d3) return;
+    var container = d3.select('body').append('svg');
+    container.append('text').attr({ x: -99999, y: -99999 }).text(text);
+    var size = container.node().getBBox();
+    container.remove();
+    return { width: size.width, height: size.height };
   }
 }
 
